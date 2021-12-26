@@ -1,3 +1,8 @@
+#[macro_use]
+extern crate sea_orm;
+
+pub mod app;
+
 #[cfg(test)]
 mod tests {
     #[test]

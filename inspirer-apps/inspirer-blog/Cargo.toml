@@ -1,6 +1,11 @@
 [package]
+edition = "2021"
 name = "inspirer-blog"
 version = "0.1.0"
-edition = "2021"
 
 [dependencies]
+log = {version = "0.4"}
+serde = {version = "1", features = ["derive"]}
+serde_json = {version = "1"}
+
+sea-orm = {version = "^0", features = ["sqlx-mysql", "runtime-tokio-rustls", "macros"], default-features = false}

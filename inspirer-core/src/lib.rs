@@ -1,5 +1,6 @@
 mod framework;
 mod application;
+mod error;
 
 #[cfg(test)]
 mod tests {
