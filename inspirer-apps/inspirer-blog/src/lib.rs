@@ -2,6 +2,9 @@
 extern crate sea_orm;
 
 pub mod app;
+pub mod error;
+
+pub(crate) use error::Result;
 
 #[cfg(test)]
 mod tests {
