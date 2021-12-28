@@ -5,8 +5,21 @@ edition = "2021"
 
 [workspace]
 members = [
+    ".",
     "inspirer-core",
-    "inspirer-apps/inspirer-blog"
+    "inspirer-common",
+    "inspirer-apps/inspirer-blog",
+    "examples/*"
 ]
 
+[[bin]]
+name = "inspirer"
+path = "src/bin/inspirer.rs"
+
 [dependencies]
+anyhow = "1.0"
+inspirer-core = {path = "inspirer-core"}
+inspirer-common = {path = "inspirer-common"}
+dotenv = "0.15"
+env_logger = "0.9.0"
+axum = "0.4.3"

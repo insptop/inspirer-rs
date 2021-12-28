@@ -1,8 +1,8 @@
-pub mod framework;
-mod application;
-mod error;
+pub mod contracts;
+pub mod error;
+pub mod macros;
 
-pub use inspirer_common::{Result, Error};
+pub use error::{Error, Result};
 
 #[cfg(test)]
 mod tests {
