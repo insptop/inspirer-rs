@@ -11,5 +11,6 @@ fn main() -> Result<()> {
     apps.load("./target/debug/simple_application.dll")?;
 
     println!("exit");
+    
     Ok(())
 }

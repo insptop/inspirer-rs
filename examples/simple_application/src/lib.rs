@@ -1,6 +1,8 @@
-use inspirer_common::contracts::InspirerRsApplication;
-use inspirer_common::declare_inspirer_rs_application;
-use inspirer_common::Result;
+use axum::{Router, routing::get};
+use inspirer_core::application::ApplicationFramework;
+use inspirer_core::contracts::InspirerRsApplication;
+use inspirer_core::declare_inspirer_rs_application;
+use inspirer_core::Result;
 
 fn simple_application_constrcutor() -> SimpleApp  {
     SimpleApp::default()
@@ -8,6 +10,10 @@ fn simple_application_constrcutor() -> SimpleApp  {
 
 #[derive(Default)]
 pub struct SimpleApp;
+
+async fn test() -> &'static str {
+    "test"
+}
 
 impl InspirerRsApplication for SimpleApp {
     fn name(&self) -> &'static str {
@@ -26,6 +32,10 @@ impl InspirerRsApplication for SimpleApp {
     fn on_unload(&self) -> Result<()> {
         println!("Wow, im unloaded");
         Ok(())
+    }
+
+    fn register(&self, framework: &ApplicationFramework) {
+        framework.register_router(Router::new().route("/simple/test", get(test)));
     }
 }
 

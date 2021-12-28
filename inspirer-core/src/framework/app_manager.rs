@@ -1,7 +1,7 @@
-use crate::{Error, Result};
-use std::path::Path;
+use crate::{Error, Result, application::ApplicationFramework};
+use std::{path::Path, ops::Deref};
 
-use inspirer_common::contracts::{
+use crate::contracts::{
     InspirerRsApplication, InspirerRsApplicationCreator, INSPIRER_RS_APPLICATION_CREATOR,
 };
 use libloading::{Library, Symbol};
@@ -70,6 +70,10 @@ impl InspirerRsApplications {
             });
         }
     }
+
+    pub fn register(&self, framework: &ApplicationFramework) {
+        
+    }
 }
 
 impl Drop for InspirerRsApplications {
@@ -77,5 +81,13 @@ impl Drop for InspirerRsApplications {
         if !self.apps.is_empty() {
             self.destroy();
         }
+    }
+}
+
+impl Deref for InspirerRsApplications {
+    type Target = Vec<Box<dyn InspirerRsApplication>>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.apps
     }
 }

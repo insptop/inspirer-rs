@@ -7,4 +7,5 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
-inspirer-common = {path = "../../inspirer-common"}
+inspirer-core = {path = "../../inspirer-core"}
+axum = "0.4.3"
