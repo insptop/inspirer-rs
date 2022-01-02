@@ -7,5 +7,9 @@ pub enum Error {
     #[error("Error to load application.")]
     LoadApplicationError,
     #[error(transparent)]
+    HyperError(#[from] hyper::Error),
+    #[error("Runtime build error: {0}")]
+    RuntimeBuildError(#[source] std::io::Error),
+    #[error(transparent)]
     Other(#[from] anyhow::Error)
 }

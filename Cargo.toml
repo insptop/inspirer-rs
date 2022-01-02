@@ -21,4 +21,6 @@ inspirer-core = {path = "inspirer-core"}
 dotenv = "0.15"
 env_logger = "0.9.0"
 axum = "0.4.3"
+log = {version = "0.4"}
 tokio = {version = "1", features = ["macros", "rt"]}
+clap = {version = "3", features = ["derive"]}

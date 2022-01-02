@@ -1,4 +1,4 @@
-use crate::{Error, Result, application::ApplicationFramework};
+use crate::{Error, Result};
 use std::{path::Path, ops::Deref};
 
 use crate::contracts::{
@@ -69,10 +69,6 @@ impl InspirerRsApplications {
                 ()
             });
         }
-    }
-
-    pub fn register(&self, framework: &ApplicationFramework) {
-        
     }
 }
 

@@ -1,5 +1,4 @@
 use axum::{Router, routing::get};
-use inspirer_core::application::ApplicationFramework;
 use inspirer_core::contracts::InspirerRsApplication;
 use inspirer_core::declare_inspirer_rs_application;
 use inspirer_core::Result;
@@ -34,8 +33,10 @@ impl InspirerRsApplication for SimpleApp {
         Ok(())
     }
 
-    fn register(&self, framework: &ApplicationFramework) {
-        framework.register_router(Router::new().route("/simple/test", get(test)));
+    fn get_routes(&self) -> Option<Router> {
+        Some(
+            Router::new().route("/simple/test", get(test))
+        )
     }
 }
 
