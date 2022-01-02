@@ -33,6 +33,7 @@ fn start() -> Result<()> {
     use inspirer_rs::server::start as start_server_with_default_rt;
 
     let mut apps = InspirerRsApplications::default();
+    apps.load("./target/debug/inspirer_blog.dll")?;
     apps.load("./target/debug/simple_application.dll")?;
 
     let mut router = Router::new();

@@ -1,10 +1,19 @@
 #[macro_use]
 extern crate sea_orm;
+#[macro_use]
+extern crate inspirer_core;
+#[macro_use]
+extern crate serde;
 
 pub mod app;
-pub mod error;
 
-pub(crate) use error::Result;
+pub use inspirer_core::{Error, Result};
+
+fn constructor() -> app::InspirerBlogApplication {
+    app::InspirerBlogApplication::default()
+}
+
+declare_inspirer_rs_application!(app::InspirerBlogApplication, constructor);
 
 #[cfg(test)]
 mod tests {
