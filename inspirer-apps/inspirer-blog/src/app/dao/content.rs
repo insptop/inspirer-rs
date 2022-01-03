@@ -1,4 +1,4 @@
-use inspirer_core::dao::DaoProject;
+use inspirer_core::application::DaoProject;
 use sea_orm::{ConnectionTrait, EntityTrait, Set};
 
 use crate::app::model::{content, content_body};
