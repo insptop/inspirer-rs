@@ -14,3 +14,6 @@ sea-orm = {version = "^0", features = ["sqlx-mysql", "runtime-tokio-rustls", "ma
 hyper = {version = "0.14"}
 axum = {version = "0.4.3"}
 async-trait = {version = "0.1.43"}
+config = {version = "0.11"}
+crossbeam-utils = {version = "0.8"}
+type-map = {version = "0.5"}

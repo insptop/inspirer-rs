@@ -12,6 +12,7 @@ pub trait InspirerBaseUserTrait {
         nickname: String,
     ) -> Result<u64>;
     async fn find_user_by_id(&self, id: u64) -> Result<Option<user::Model>>;
+    async fn find_user_by_username(&self, username: &str) -> Result<Option<user::Model>>;
     async fn update_password(&self, id: u64, new_password: String) -> Result<bool>;
     async fn update_nickname(&self, id: u64, new_nickname: String) -> Result<bool>;
     async fn update_email(&self, id: u64, new_email: String) -> Result<bool>;
@@ -46,6 +47,14 @@ where
 
     async fn find_user_by_id(&self, id: u64) -> Result<Option<user::Model>> {
         user::Entity::find_by_id(id)
+            .one(self.connection())
+            .await
+            .map_err(Into::into)
+    }
+
+    async fn find_user_by_username(&self, username: &str) -> Result<Option<user::Model>> {
+        user::Entity::find()
+            .filter(user::Column::Username.eq(username))
             .one(self.connection())
             .await
             .map_err(Into::into)

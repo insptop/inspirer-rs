@@ -2,7 +2,7 @@ use std::net::SocketAddr;
 
 use axum::Router;
 
-use inspirer_core::{Error, Result};
+use inspirer_core::{Error, Result, config::Repository};
 use tokio::runtime::Runtime;
 
 pub async fn start_server(listen: &SocketAddr, router: Router) -> Result<()> {
@@ -13,6 +13,9 @@ pub async fn start_server(listen: &SocketAddr, router: Router) -> Result<()> {
 }
 
 pub fn start(listen: &SocketAddr, router: Router) -> Result<()> {
+    // Create service and application shared
+    
+
     let runtime = Runtime::new().map_err(|err| {
         log::error!("Create runtime failed: {}", err);
         Error::RuntimeBuildError(err)
