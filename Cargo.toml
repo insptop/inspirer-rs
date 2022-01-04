@@ -25,3 +25,4 @@ axum = "0.4.3"
 log = {version = "0.4"}
 tokio = {version = "1", features = ["macros", "rt"]}
 clap = {version = "3", features = ["derive"]}
+serde = {version = "1", features = ["derive"]}

@@ -36,6 +36,8 @@ impl Auth {
     }
 
     pub async fn login(&self, credential: Credential) -> Result<String> {
+        log::debug!("Received login request: {:?}", credential);
+        
         let (verified, user) = self.attepmt(credential).await?;
 
         if verified {

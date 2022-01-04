@@ -1,18 +1,25 @@
-use axum::Router;
-use inspirer_core::framework::app_manager::InspirerRsApplications;
-use clap::{Parser, Subcommand};
+use std::{path::PathBuf, env::current_dir};
+
 use anyhow::Result;
+use axum::Router;
+use clap::{Parser, Subcommand};
+use inspirer_core::framework::{app_manager::InspirerRsApplications, EnviromentContext};
 
 #[derive(Debug, Parser)]
 struct Cli {
     #[clap(subcommand)]
-    command: Subcommands
+    command: Subcommands,
 }
 
 #[derive(Debug, Subcommand)]
 enum Subcommands {
-    Start,
-    Stop
+    Start {
+        #[clap(long, short)]
+        daemon: Option<bool>,
+        #[clap(long, short)]
+        config: Option<PathBuf>,
+    },
+    Stop,
 }
 
 fn main() -> Result<()> {
@@ -22,17 +29,24 @@ fn main() -> Result<()> {
     env_logger::init();
 
     match cli.command {
-        Subcommands::Start => start()?,
-        Subcommands::Stop => ()
+        Subcommands::Start { daemon, config } => start(daemon.unwrap_or_default(), config)?,
+        Subcommands::Stop => (),
     }
-    
+
     Ok(())
 }
 
-fn start() -> Result<()> {
+fn start(daemon: bool, config: Option<PathBuf>) -> Result<()> {
     use inspirer_rs::server::start as start_server_with_default_rt;
 
+    let ctx = EnviromentContext {
+        daemonize: daemon,
+        config_file: config,
+        work_dir: current_dir()?,
+    };
+
     let mut apps = InspirerRsApplications::default();
+    apps.load("./target/debug/inspirer_base.dll")?;
     apps.load("./target/debug/inspirer_blog.dll")?;
     apps.load("./target/debug/simple_application.dll")?;
 
@@ -44,7 +58,7 @@ fn start() -> Result<()> {
         }
     }
 
-    start_server_with_default_rt(&"0.0.0.0:3008".parse()?, router)?;
+    start_server_with_default_rt(router, ctx)?;
 
     Ok(())
 }

@@ -64,8 +64,12 @@ where
     type Rejection = Error;
 
     async fn from_request(req: &mut RequestParts<B>) -> Result<Self, Self::Rejection> {
+        log::debug!("Extract application shared.");
         let res = req.extensions()
-            .ok_or_else(|| Error::ExtractApplicationComponentError)?
+            .ok_or_else(|| {
+                log::error!("<Application> component extract error");
+                Error::ExtractApplicationComponentError
+            })?
             .get::<ApplicationShared>()
             .ok_or_else(|| {
                 log::error!("<Application> component is not found!");

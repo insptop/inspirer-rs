@@ -7,7 +7,7 @@ use std::env;
 use super::ComponentManager;
 
 pub async fn component_constructor(manager: &ComponentManager) -> Result<DatabaseConnection> {
-    log::trace!("Component <DatabaseConnection> creating.");
+    log::debug!("Component <DatabaseConnection> creating.");
 
     let database_url = match manager.component::<Repository>()? {
         Some(config) => config
