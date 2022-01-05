@@ -45,20 +45,7 @@ fn start(daemon: bool, config: Option<PathBuf>) -> Result<()> {
         work_dir: current_dir()?,
     };
 
-    let mut apps = InspirerRsApplications::default();
-    apps.load("./target/debug/inspirer_base.dll")?;
-    apps.load("./target/debug/inspirer_blog.dll")?;
-    apps.load("./target/debug/simple_application.dll")?;
-
-    let mut router = Router::new();
-
-    for app in apps.iter() {
-        if let Some(routes) = app.get_routes() {
-            router = router.merge(routes);
-        }
-    }
-
-    start_server_with_default_rt(router, ctx)?;
+    start_server_with_default_rt(ctx)?;
 
     Ok(())
 }

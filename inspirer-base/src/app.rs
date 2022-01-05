@@ -1,4 +1,4 @@
-use inspirer_core::{contracts::InspirerRsApplication, Router};
+use inspirer_core::{contracts::InspirerRsApplication, Router, application::ApplicationShared};
 
 pub mod controller;
 pub mod dao;
@@ -26,7 +26,7 @@ impl InspirerRsApplication for InspirerBaseApplication {
         Ok(())
     }
 
-    fn get_routes(&self) -> Option<Router> {
-        Some(route::get_routes())
+    fn get_routes(&self, shared: ApplicationShared) -> Option<Router> {
+        Some(route::get_routes(shared))
     }
 }

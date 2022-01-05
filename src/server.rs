@@ -7,7 +7,7 @@ use inspirer_core::{
     config::Repository,
     framework::{
         component::{self, ComponentManager},
-        EnviromentContext,
+        EnviromentContext, app_manager::InspirerRsApplications,
     },
     Error, Result,
 };
@@ -36,7 +36,7 @@ pub async fn start_server(listen: &SocketAddr, router: Router) -> Result<()> {
         .map_err(Into::into)
 }
 
-pub fn start(router: Router, ctx: EnviromentContext) -> Result<()> {
+pub fn start(ctx: EnviromentContext) -> Result<()> {
     let runtime = Runtime::new().map_err(|err| {
         log::error!("Create runtime failed: {}", err);
         Error::RuntimeBuildError(err)
@@ -54,6 +54,7 @@ pub fn start(router: Router, ctx: EnviromentContext) -> Result<()> {
         cm.register(component::database::component_constructor)
             .await?;
 
+    
         let config = cm.component::<Repository>()?;
         let server_config = config
             .unwrap()
@@ -68,6 +69,19 @@ pub fn start(router: Router, ctx: EnviromentContext) -> Result<()> {
                 config: cm.component()?.unwrap(),
             },
         };
+
+        let mut apps = InspirerRsApplications::default();
+        apps.load("./target/debug/inspirer_base.dll")?;
+        apps.load("./target/debug/inspirer_blog.dll")?;
+        apps.load("./target/debug/simple_application.dll")?;
+
+        let mut router = Router::new();
+
+        for app in apps.iter() {
+            if let Some(routes) = app.get_routes(shared.clone()) {
+                router = router.merge(routes);
+            }
+        }
 
         let router = router.layer(AddExtensionLayer::new(shared));
 

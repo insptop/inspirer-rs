@@ -1,3 +1,4 @@
+use inspirer_core::application::ApplicationShared;
 use inspirer_core::contracts::InspirerRsApplication;
 use inspirer_core::{Router, routing::get};
 
@@ -26,7 +27,7 @@ impl InspirerRsApplication for InspirerBlogApplication {
         Ok(())
     }
 
-    fn get_routes(&self) -> Option<Router> {
+    fn get_routes(&self, shared: ApplicationShared) -> Option<Router> {
         Some(Router::new().route("/content", get(controller::content::get_content_list)))
     }
 }

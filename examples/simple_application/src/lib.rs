@@ -1,5 +1,5 @@
 use axum::extract::Path;
-use axum::{routing::get, Router};
+use axum::{routing::get, Router, AddExtensionLayer};
 use inspirer_core::application::ApplicationShared;
 use inspirer_core::contracts::InspirerRsApplication;
 use inspirer_core::declare_inspirer_rs_application;
@@ -47,12 +47,13 @@ impl InspirerRsApplication for SimpleApp {
         Ok(())
     }
 
-    fn get_routes(&self) -> Option<Router> {
+    fn get_routes(&self, shared: ApplicationShared) -> Option<Router> {
         Some(
             Router::new()
                 .route("/simple/path/:id", get(path_param))
                 .route("/simple/test", get(test))
-                .route("/simple/config", get(get_context)),
+                .route("/simple/config", get(get_context))
+                .layer(AddExtensionLayer::new(shared)),
         )
     }
 }
