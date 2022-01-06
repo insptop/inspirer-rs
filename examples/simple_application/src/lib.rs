@@ -53,7 +53,7 @@ impl InspirerRsApplication for SimpleApp {
                 .route("/simple/path/:id", get(path_param))
                 .route("/simple/test", get(test))
                 .route("/simple/config", get(get_context))
-                .layer(AddExtensionLayer::new(shared)),
+                // .layer(AddExtensionLayer::new(shared)),
         )
     }
 }
