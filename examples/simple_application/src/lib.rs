@@ -3,7 +3,7 @@ use axum::{routing::get, Router, AddExtensionLayer};
 use inspirer_core::application::ApplicationShared;
 use inspirer_core::contracts::{InspirerRsApplicationInject, InspirerRsApplication};
 use inspirer_core::declare_inspirer_rs_application;
-use inspirer_core::Result;
+use inspirer_core::{Result, log};
 
 fn simple_application_constrcutor() -> SimpleApp {
     SimpleApp::default()
@@ -38,7 +38,9 @@ impl InspirerRsApplicationInject for SimpleApp {
     }
 
     fn on_load(&self) -> Result<()> {
-        println!("Wow, im loaded");
+        env_logger::init();
+
+        log::info!("Wow, im loaded");
         Ok(())
     }
 

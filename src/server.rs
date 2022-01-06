@@ -1,4 +1,4 @@
-use std::net::SocketAddr;
+use std::{net::SocketAddr, path::PathBuf};
 
 use axum::{Router, AddExtensionLayer};
 
@@ -17,6 +17,7 @@ use tokio::runtime::Runtime;
 #[derive(Debug, Deserialize)]
 pub struct ServerConfig {
     pub listen: SocketAddr,
+    pub apps: Vec<PathBuf>,
 }
 
 impl Default for ServerConfig {
@@ -25,6 +26,7 @@ impl Default for ServerConfig {
 
         ServerConfig {
             listen: addr.as_str().parse().expect("Format listen address error."),
+            apps: Default::default(),
         }
     }
 }
@@ -70,11 +72,14 @@ pub fn start(ctx: EnviromentContext) -> Result<()> {
             },
         };
 
-        let mut apps = InspirerRsApplications::default();
-        apps.load("./target/debug/inspirer_base.dll")?;
-        apps.load("./target/debug/inspirer_blog.dll")?;
-        apps.load("./target/debug/simple_application.dll")?;
 
+        let mut apps = InspirerRsApplications::default();
+
+
+        for lib in server_config.apps.iter() {
+            apps.load(lib)?;
+        }
+        
         let mut router = Router::new();
 
         for app in apps.iter() {

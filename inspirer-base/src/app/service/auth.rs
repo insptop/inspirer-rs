@@ -19,6 +19,7 @@ impl ServiceProject for Auth {
 
 impl Auth {
     pub async fn attepmt(&self, credential: Credential) -> Result<(bool, user::Model)> {
+        log::debug!("attempt credential.");
         let user = Dao::new(self.srv.connection())
             .find_user_by_username(credential.username.as_str())
             .await?
@@ -28,6 +29,7 @@ impl Auth {
                 StatusCode::BAD_REQUEST,
             ))?;
 
+        log::debug!("attempt credential. get user model: {:?}", user);
         if pwhash::bcrypt::verify(&credential.password, &user.password) {
             Ok((true, user))
         } else {
@@ -37,7 +39,7 @@ impl Auth {
 
     pub async fn login(&self, credential: Credential) -> Result<String> {
         log::debug!("Received login request: {:?}", credential);
-        
+
         let (verified, user) = self.attepmt(credential).await?;
 
         if verified {

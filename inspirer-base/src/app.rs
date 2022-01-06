@@ -19,6 +19,7 @@ impl InspirerRsApplicationInject for InspirerBaseApplication {
     }
 
     fn on_load(&self) -> inspirer_core::Result<()> {
+        env_logger::init();
         Ok(())
     }
 
