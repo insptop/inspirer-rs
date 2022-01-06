@@ -9,3 +9,4 @@ crate-type = ["cdylib"]
 [dependencies]
 inspirer-core = {path = "../../inspirer-core"}
 axum = "0.4.3"
+env_logger = {version = "*"}

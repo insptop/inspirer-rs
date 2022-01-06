@@ -13,3 +13,4 @@ sea-orm = {version = "^0", features = ["sqlx-mysql", "runtime-tokio-rustls", "ma
 pwhash = {version = "1"}
 jsonwebtoken = {version = "7"}
 chrono = {version = "0.4", features = ["serde"]}
+env_logger = {version = "*"}
