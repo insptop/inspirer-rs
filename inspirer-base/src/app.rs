@@ -1,4 +1,4 @@
-use inspirer_core::{contracts::InspirerRsApplication, Router, application::ApplicationShared};
+use inspirer_core::{contracts::{InspirerRsApplicationInject, InspirerRsApplication}, Router, application::ApplicationShared};
 
 pub mod controller;
 pub mod dao;
@@ -9,7 +9,7 @@ pub mod route;
 #[derive(Default)]
 pub struct InspirerBaseApplication;
 
-impl InspirerRsApplication for InspirerBaseApplication {
+impl InspirerRsApplicationInject for InspirerBaseApplication {
     fn name(&self) -> &'static str {
         "inspirer-base"
     }
@@ -29,4 +29,19 @@ impl InspirerRsApplication for InspirerBaseApplication {
     fn get_routes(&self, shared: ApplicationShared) -> Option<Router> {
         Some(route::get_routes(shared))
     }
+
+    fn get_application_constructor(&self, ctx: inspirer_core::contracts::RuntimeContext) -> Box<dyn inspirer_core::contracts::InspirerRsApplication> {
+        Box::new(Application {
+            handle: ctx.handle.clone()
+        })
+    }
+}
+
+
+pub struct Application {
+    handle: inspirer_core::contracts::Handle,
+}
+
+impl InspirerRsApplication for Application {
+
 }

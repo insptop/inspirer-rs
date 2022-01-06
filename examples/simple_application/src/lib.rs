@@ -1,7 +1,7 @@
 use axum::extract::Path;
 use axum::{routing::get, Router, AddExtensionLayer};
 use inspirer_core::application::ApplicationShared;
-use inspirer_core::contracts::InspirerRsApplication;
+use inspirer_core::contracts::{InspirerRsApplicationInject, InspirerRsApplication};
 use inspirer_core::declare_inspirer_rs_application;
 use inspirer_core::Result;
 
@@ -28,7 +28,7 @@ async fn path_param(Path((id, )): Path<(i64, )>) -> String {
     format!("received: {}", id)
 }
 
-impl InspirerRsApplication for SimpleApp {
+impl InspirerRsApplicationInject for SimpleApp {
     fn name(&self) -> &'static str {
         "simple-application"
     }
@@ -56,6 +56,20 @@ impl InspirerRsApplication for SimpleApp {
                 .layer(AddExtensionLayer::new(shared)),
         )
     }
+
+    fn get_application_constructor(&self, ctx: inspirer_core::contracts::RuntimeContext) -> Box<dyn inspirer_core::contracts::InspirerRsApplication> {
+        Box::new(Application {
+            handle: ctx.handle.clone()
+        })
+    }
+}
+
+pub struct Application {
+    handle: inspirer_core::contracts::Handle,
+}
+
+impl InspirerRsApplication for Application {
+
 }
 
 declare_inspirer_rs_application!(SimpleApp, simple_application_constrcutor);

@@ -17,3 +17,4 @@ async-trait = {version = "0.1.43"}
 config = {version = "0.11"}
 crossbeam-utils = {version = "0.8"}
 type-map = {version = "0.5"}
+tokio = {version = "1", features = ["macros", "rt", "rt-multi-thread", "time", "io-util"]}

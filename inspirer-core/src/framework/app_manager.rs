@@ -2,14 +2,14 @@ use crate::{Error, Result};
 use std::{path::Path, ops::Deref};
 
 use crate::contracts::{
-    InspirerRsApplication, InspirerRsApplicationCreator, INSPIRER_RS_APPLICATION_CREATOR,
+    InspirerRsApplicationInject, InspirerRsApplicationCreator, INSPIRER_RS_APPLICATION_CREATOR,
 };
 use libloading::{Library, Symbol};
 
 #[derive(Default)]
 pub struct InspirerRsApplications {
     libs: Vec<Library>,
-    apps: Vec<Box<dyn InspirerRsApplication>>,
+    apps: Vec<Box<dyn InspirerRsApplicationInject>>,
 }
 
 impl InspirerRsApplications {
@@ -81,7 +81,7 @@ impl Drop for InspirerRsApplications {
 }
 
 impl Deref for InspirerRsApplications {
-    type Target = Vec<Box<dyn InspirerRsApplication>>;
+    type Target = Vec<Box<dyn InspirerRsApplicationInject>>;
 
     fn deref(&self) -> &Self::Target {
         &self.apps

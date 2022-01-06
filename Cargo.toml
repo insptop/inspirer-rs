@@ -8,7 +8,6 @@ members = [
     ".",
     "inspirer-core",
     "inspirer-base",
-    "inspirer-apps/inspirer-blog",
     "examples/*"
 ]
 
@@ -23,6 +22,6 @@ dotenv = "0.15"
 env_logger = "0.9.0"
 axum = "0.4.3"
 log = {version = "0.4"}
-tokio = {version = "1", features = ["macros", "rt"]}
+tokio = {version = "1", features = ["macros", "rt", "rt-multi-thread", "time", "io-util"]}
 clap = {version = "3", features = ["derive"]}
 serde = {version = "1", features = ["derive"]}
