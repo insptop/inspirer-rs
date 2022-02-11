@@ -1,7 +1,9 @@
 use std::{net::SocketAddr, path::PathBuf};
 
+use axum::routing::any_service;
 use axum::{Router, AddExtensionLayer};
 
+use inspirer_core::application::ApplicationHandler;
 use inspirer_foundation::{component, service::ServiceBuilder, Result, Error};
 use inspirer_foundation::component::config::{Source, ConfigAdapter};
 use serde::Deserialize;
@@ -58,6 +60,22 @@ where T: Source + Send + Sync + 'static
         }
         
         let mut router = Router::new();
+        let mut runtimes = vec![];
+        for app in apps.iter() {
+            let runtime = app.run();
+
+            match runtime.application_handler {
+                ApplicationHandler::WebApplicationHandler(ref handler) => {
+                    let handler = handler.clone();
+
+                    log::info!("Append web application [{}] route", app.name());
+                    router = router.nest(format!("/{}", app.name()).as_str(), any_service(handler));
+                }
+            }
+
+            runtimes.push(runtime);
+        }
+
         let router = router.layer(AddExtensionLayer::new(service));
 
         start_server(&server_config.listen, router).await

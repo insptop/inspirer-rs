@@ -1,6 +1,6 @@
 use std::any::Any;
 use inspirer_foundation::Result;
-use crate::application::ApplicationHandler;
+use crate::application::ApplicationRuntime;
 
 pub const APPLICATION_CREATOR: &'static str = "_inspirer_application_creator";
 
@@ -11,5 +11,5 @@ pub trait ApplicationInject: Any + Send + Sync {
     fn description(&self) -> &'static str;
     fn on_load(&self) -> Result<()>;
     fn on_unload(&self) -> Result<()>;
-    fn run(&self) -> ApplicationHandler;
+    fn run(&self) -> ApplicationRuntime;
 }

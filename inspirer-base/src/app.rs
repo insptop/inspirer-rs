@@ -1,4 +1,4 @@
-use inspirer_core::{contracts::ApplicationInject, application::ApplicationHandler};
+use inspirer_core::{contracts::ApplicationInject, application::{ApplicationHandler, create_web_application_runtime, ApplicationRuntime}, Router, routing::get};
 use inspirer_foundation::Result;
 
 
@@ -23,7 +23,21 @@ impl ApplicationInject for InspirerBaseApplication {
         Ok(())
     }
 
-    fn run(&self) -> ApplicationHandler {
-        ApplicationHandler
+    fn run(&self) -> ApplicationRuntime {
+        let router = Router::new()
+            .route("/", get(hello));
+
+        let runtime = create_web_application_runtime(router).unwrap();
+        match runtime.application_handler {
+            ApplicationHandler::WebApplicationHandler(ref h) => {
+                assert!(!h.service_agent.is_closed());
+            }
+        }
+
+        runtime
     }
+}
+
+async fn hello() -> &'static str {
+    "application report!"
 }
