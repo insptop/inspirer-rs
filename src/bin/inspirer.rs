@@ -1,9 +1,12 @@
-use std::{path::PathBuf, env::current_dir};
+use std::{env::current_dir, path::PathBuf};
 
 use anyhow::Result;
 use axum::Router;
 use clap::{Parser, Subcommand};
-use inspirer_core::framework::{app_manager::InspirerRsApplications, EnviromentContext};
+use inspirer_foundation::{
+    component::config::{File, FileSourceFile},
+    Error,
+};
 
 #[derive(Debug, Parser)]
 struct Cli {
@@ -39,13 +42,9 @@ fn main() -> Result<()> {
 fn start(daemon: bool, config: Option<PathBuf>) -> Result<()> {
     use inspirer_rs::server::start as start_server_with_default_rt;
 
-    let ctx = EnviromentContext {
-        daemonize: daemon,
-        config_file: config,
-        work_dir: current_dir()?,
-    };
-
-    start_server_with_default_rt(ctx)?;
+    start_server_with_default_rt(File::<FileSourceFile>::from(
+        config.ok_or(Error::GetConfigurationFailedError)?,
+    ))?;
 
     Ok(())
 }

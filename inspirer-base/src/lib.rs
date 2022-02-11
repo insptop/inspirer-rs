@@ -11,7 +11,7 @@ fn constructor() -> app::InspirerBaseApplication {
     app::InspirerBaseApplication::default()
 }
 
-declare_inspirer_rs_application!(app::InspirerBaseApplication, constructor);
+declare_inspirer_application!(app::InspirerBaseApplication, constructor);
 
 #[cfg(test)]
 mod tests {

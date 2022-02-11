@@ -4,17 +4,18 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-libloading = "0.7"
-thiserror = {version = "1"}
-log = {version = "0.4"}
-serde = {version = "1", features = ["derive"]}
-serde_json = {version = "1"}
-anyhow = {version = "1"}
-sea-orm = {version = "^0", features = ["sqlx-mysql", "runtime-tokio-rustls", "macros"], default-features = false}
-hyper = {version = "0.14"}
-axum = {version = "0.4.3"}
-async-trait = {version = "0.1.43"}
-config = {version = "0.11"}
-crossbeam-utils = {version = "0.8"}
-type-map = {version = "0.5"}
-tokio = {version = "1", features = ["macros", "rt", "rt-multi-thread", "time", "io-util"]}
+libloading = "0.7.3"
+thiserror = "1.0.30"
+log = "0.4.14"
+serde = { version = "1.0.136", features = ["derive"] }
+serde_json = "1.0.78"
+anyhow = "1.0.53"
+sea-orm = { version = "0.6.0", features = ["sqlx-mysql", "runtime-tokio-rustls", "macros"], default-features = false }
+hyper = "0.14.17"
+axum = "0.4.5"
+async-trait = "0.1.52"
+config = "0.11.0"
+crossbeam-utils = "0.8.7"
+type-map = "0.5.0"
+tokio = { version = "1.16.1", features = ["macros", "rt", "rt-multi-thread", "time", "io-util"] }
+inspirer-foundation = {path = "../inspirer-foundation", features = ["app-ext"]}

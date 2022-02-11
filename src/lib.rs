@@ -1,4 +1,5 @@
 pub mod server;
+pub mod app;
 
 #[cfg(test)]
 mod tests {

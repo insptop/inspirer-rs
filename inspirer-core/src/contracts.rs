@@ -1,27 +1,15 @@
 use std::any::Any;
+use inspirer_foundation::Result;
+use crate::application::ApplicationHandler;
 
-use axum::Router;
-pub use tokio::runtime::Handle;
+pub const APPLICATION_CREATOR: &'static str = "_inspirer_application_creator";
 
-use crate::{Result, application::ApplicationShared};
+pub type ApplicationCreator = unsafe fn() -> *mut dyn ApplicationInject;
 
-pub const INSPIRER_RS_APPLICATION_CREATOR: &'static str = "inspirer_rs_application_creator";
-
-pub type InspirerRsApplicationCreator = unsafe fn() -> *mut dyn InspirerRsApplicationInject;
-
-pub struct RuntimeContext {
-    pub handle: Handle
-}
-
-pub trait InspirerRsApplicationInject: Any + Send + Sync {
+pub trait ApplicationInject: Any + Send + Sync {
     fn name(&self) -> &'static str;
     fn description(&self) -> &'static str;
     fn on_load(&self) -> Result<()>;
     fn on_unload(&self) -> Result<()>;
-    fn get_routes(&self, shared: ApplicationShared) -> Option<Router>;
-    fn get_application_constructor(&self, ctx: RuntimeContext) -> Box<dyn InspirerRsApplication>;
-}
-
-pub trait InspirerRsApplication {
-    
+    fn run(&self) -> ApplicationHandler;
 }

@@ -2,17 +2,12 @@ use std::{net::SocketAddr, path::PathBuf};
 
 use axum::{Router, AddExtensionLayer};
 
-use inspirer_core::{
-    application::ApplicationShared,
-    config::Repository,
-    framework::{
-        component::{self, ComponentManager},
-        EnviromentContext, app_manager::InspirerRsApplications,
-    },
-    Error, Result,
-};
+use inspirer_foundation::{component, service::ServiceBuilder, Result, Error};
+use inspirer_foundation::component::config::{Source, ConfigAdapter};
 use serde::Deserialize;
 use tokio::runtime::Runtime;
+
+use crate::app::manager::ApplicationExtension;
 
 #[derive(Debug, Deserialize)]
 pub struct ServerConfig {
@@ -38,7 +33,9 @@ pub async fn start_server(listen: &SocketAddr, router: Router) -> Result<()> {
         .map_err(Into::into)
 }
 
-pub fn start(ctx: EnviromentContext) -> Result<()> {
+pub fn start<T>(config_source: T) -> Result<()> 
+where T: Source + Send + Sync + 'static
+{
     let runtime = Runtime::new().map_err(|err| {
         log::error!("Create runtime failed: {}", err);
         Error::RuntimeBuildError(err)
@@ -46,49 +43,22 @@ pub fn start(ctx: EnviromentContext) -> Result<()> {
 
     runtime.block_on(async move {
         log::debug!("Start async runtime.");
-        // Create kernel
-        let cm = ComponentManager::default();
+        // Create kernel service
+        let mut service_builder = ServiceBuilder::default();
+        service_builder.provide(component::config::ConfigComponentConstructor(config_source));
+        service_builder.provide(component::database::DatabaseComponentConstructor);
 
-        cm.register(component::environment::component_constructor_builder(ctx))
-            .await?;
-        cm.register(component::config::component_constructor)
-            .await?;
-        cm.register(component::database::component_constructor)
-            .await?;
+        let service = service_builder.build().await?;
+        let server_config = service.get::<ServerConfig>("server").await?;
 
-    
-        let config = cm.component::<Repository>()?;
-        let server_config = config
-            .unwrap()
-            .get::<ServerConfig>("server")?
-            .unwrap_or_default();
-
-        log::debug!("Server config: {:?}", server_config);
-
-        let shared = ApplicationShared {
-            service: inspirer_core::application::Service {
-                database: cm.component()?.unwrap(),
-                config: cm.component()?.unwrap(),
-            },
-        };
-
-
-        let mut apps = InspirerRsApplications::default();
-
+        let mut apps = ApplicationExtension::default();
 
         for lib in server_config.apps.iter() {
             apps.load(lib)?;
         }
         
         let mut router = Router::new();
-
-        for app in apps.iter() {
-            if let Some(routes) = app.get_routes(shared.clone()) {
-                router = router.merge(routes);
-            }
-        }
-
-        let router = router.layer(AddExtensionLayer::new(shared));
+        let router = router.layer(AddExtensionLayer::new(service));
 
         start_server(&server_config.listen, router).await
     })

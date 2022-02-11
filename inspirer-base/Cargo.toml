@@ -8,6 +8,7 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 inspirer-core = {path = "../inspirer-core"}
+inspirer-foundation = {path = "../inspirer-foundation"}
 serde = {version = "1", features = ["derive"]}
 sea-orm = {version = "^0", features = ["sqlx-mysql", "runtime-tokio-rustls", "macros"], default-features = false}
 pwhash = {version = "1"}

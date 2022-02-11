@@ -1,18 +1,15 @@
-use crate::{Error, Result};
+use inspirer_core::contracts::{ApplicationInject, ApplicationCreator, APPLICATION_CREATOR};
+use inspirer_foundation::Result;
+use libloading::{Library, Symbol};
 use std::{path::Path, ops::Deref};
 
-use crate::contracts::{
-    InspirerRsApplicationInject, InspirerRsApplicationCreator, INSPIRER_RS_APPLICATION_CREATOR,
-};
-use libloading::{Library, Symbol};
-
 #[derive(Default)]
-pub struct InspirerRsApplications {
+pub struct ApplicationExtension {
     libs: Vec<Library>,
-    apps: Vec<Box<dyn InspirerRsApplicationInject>>,
+    apps: Vec<Box<dyn ApplicationInject>>,
 }
 
-impl InspirerRsApplications {
+impl ApplicationExtension {
     pub fn load<P: AsRef<Path>>(&mut self, lib: P) -> Result<()> {
         log::debug!("Load application from {:?}", lib.as_ref());
 
@@ -20,9 +17,11 @@ impl InspirerRsApplications {
             let library = Library::new(lib.as_ref())?;
             self.libs.push(library);
 
+            // 此处写法并不多余，不能在 push 前就调用获取符号的逻辑
+            // 否则无法正确获取动态库
             let library_ref = self.libs.last().unwrap();
-            let constructor: Symbol<InspirerRsApplicationCreator> =
-                library_ref.get(INSPIRER_RS_APPLICATION_CREATOR.as_bytes())?;
+            let constructor: Symbol<ApplicationCreator> =
+                library_ref.get(APPLICATION_CREATOR.as_bytes())?;
 
             let boxed_raw = constructor();
             let application = Box::from_raw(boxed_raw);
@@ -72,7 +71,7 @@ impl InspirerRsApplications {
     }
 }
 
-impl Drop for InspirerRsApplications {
+impl Drop for ApplicationExtension {
     fn drop(&mut self) {
         if !self.apps.is_empty() {
             self.destroy();
@@ -80,8 +79,8 @@ impl Drop for InspirerRsApplications {
     }
 }
 
-impl Deref for InspirerRsApplications {
-    type Target = Vec<Box<dyn InspirerRsApplicationInject>>;
+impl Deref for ApplicationExtension {
+    type Target = Vec<Box<dyn ApplicationInject>>;
 
     fn deref(&self) -> &Self::Target {
         &self.apps
