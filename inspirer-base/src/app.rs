@@ -23,18 +23,11 @@ impl ApplicationInject for InspirerBaseApplication {
         Ok(())
     }
 
-    fn run(&self) -> ApplicationRuntime {
+    fn run(&self) -> Result<ApplicationRuntime> {
         let router = Router::new()
             .route("/", get(hello));
 
-        let runtime = create_web_application_runtime(router).unwrap();
-        match runtime.application_handler {
-            ApplicationHandler::WebApplicationHandler(ref h) => {
-                assert!(!h.service_agent.is_closed());
-            }
-        }
-
-        runtime
+        create_web_application_runtime(router)
     }
 }
 

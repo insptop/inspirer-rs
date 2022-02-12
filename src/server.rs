@@ -56,13 +56,14 @@ where T: Source + Send + Sync + 'static
         let mut apps = ApplicationExtension::default();
 
         for lib in server_config.apps.iter() {
+            // 加载扩展应用
             apps.load(lib)?;
         }
         
         let mut router = Router::new();
         let mut runtimes = vec![];
         for app in apps.iter() {
-            let runtime = app.run();
+            let runtime = app.run()?;
 
             match runtime.application_handler {
                 ApplicationHandler::WebApplicationHandler(ref handler) => {

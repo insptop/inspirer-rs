@@ -11,5 +11,5 @@ pub trait ApplicationInject: Any + Send + Sync {
     fn description(&self) -> &'static str;
     fn on_load(&self) -> Result<()>;
     fn on_unload(&self) -> Result<()>;
-    fn run(&self) -> ApplicationRuntime;
+    fn run(&self) -> Result<ApplicationRuntime>;
 }

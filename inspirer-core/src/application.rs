@@ -2,13 +2,11 @@ use std::convert::Infallible;
 use std::future::Future;
 use std::pin::Pin;
 use std::task::{Context, Poll};
-use std::sync::Arc;
 
 use axum::{response::Response, Router};
 use hyper::{Body, Request};
 use inspirer_foundation::{Result, Error};
 use tokio::sync::{mpsc, oneshot};
-use tokio::task::JoinHandle;
 use tower::Service;
 
 /// 数据交换对象
@@ -32,6 +30,7 @@ pub fn create_web_application_runtime(app: Router) -> Result<ApplicationRuntime>
     let (sender, mut receiver) =
         mpsc::unbounded_channel::<(Request<Body>, oneshot::Sender<ServiceResult>)>();
 
+    // 针对扩展应用单独启动线程进行执行处理
     let handle = std::thread::spawn(move || {
         let runtime = tokio::runtime::Runtime::new().unwrap();
         runtime.block_on(async move {
