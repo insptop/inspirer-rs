@@ -9,6 +9,8 @@ members = [
     "inspirer-core",
     "inspirer-foundation",
     "inspirer-base",
+    "inspirer-auth-center",
+    "inspirer-applications/*"
 ]
 
 [[bin]]

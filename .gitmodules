@@ -1,3 +1,6 @@
 [submodule "inspirer-foundation"]
 	path = inspirer-foundation
 	url = git@github.com:insptop/inspirer-foundation
+[submodule "inspirer-applications/blog"]
+	path = inspirer-applications/blog
+	url = git@github.com:insptop/inspirer-blog.git
