@@ -4,7 +4,7 @@ use axum::routing::any_service;
 use axum::{Router, AddExtensionLayer};
 
 use inspirer_core::application::ApplicationHandler;
-use inspirer_foundation::{component, service::ServiceBuilder, Result, Error};
+use inspirer_foundation::{component::*, Result, Error};
 use inspirer_foundation::component::config::{Source, ConfigAdapter};
 use serde::Deserialize;
 use tokio::runtime::Runtime;
@@ -46,9 +46,9 @@ where T: Source + Send + Sync + 'static
     runtime.block_on(async move {
         log::debug!("Start async runtime.");
         // Create kernel service
-        let mut service_builder = ServiceBuilder::default();
-        service_builder.provide(component::config::ConfigComponentConstructor(config_source));
-        service_builder.provide(component::database::DatabaseComponentConstructor);
+        let mut service_builder = ComponentProviderBuilder::default();
+        service_builder.provide(config::ConfigComponentConstructor(config_source));
+        service_builder.provide(database::DatabaseComponentConstructor);
 
         let service = service_builder.build().await?;
         let server_config = service.get::<ServerConfig>("server").await?;
