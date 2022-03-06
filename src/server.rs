@@ -38,47 +38,7 @@ pub async fn start_server(listen: &SocketAddr, router: Router) -> Result<()> {
 pub fn start<T>(config_source: T) -> Result<()> 
 where T: Source + Send + Sync + 'static
 {
-    let runtime = Runtime::new().map_err(|err| {
-        log::error!("Create runtime failed: {}", err);
-        Error::RuntimeBuildError(err)
-    })?;
-
-    runtime.block_on(async move {
-        log::debug!("Start async runtime.");
-        // Create kernel service
-        let mut service_builder = ComponentProviderBuilder::default();
-        service_builder.provide(config::ConfigComponentConstructor(config_source));
-        service_builder.provide(database::DatabaseComponentConstructor);
-
-        let service = service_builder.build().await?;
-        let server_config = service.get::<ServerConfig>("server").await?;
-
-        let mut apps = ApplicationExtension::default();
-
-        for lib in server_config.apps.iter() {
-            // 加载扩展应用
-            apps.load(lib)?;
-        }
-        
-        let mut router = Router::new();
-        let mut runtimes = vec![];
-        for app in apps.iter() {
-            let runtime = app.run()?;
-
-            match runtime.application_handler {
-                ApplicationHandler::WebApplicationHandler(ref handler) => {
-                    let handler = handler.clone();
-
-                    log::info!("Append web application [{}] route", app.name());
-                    router = router.nest(format!("/{}", app.name()).as_str(), any_service(handler));
-                }
-            }
-
-            runtimes.push(runtime);
-        }
-
-        let router = router.layer(AddExtensionLayer::new(service));
-
-        start_server(&server_config.listen, router).await
-    })
+    // todo
+    
+    Ok(())
 }
