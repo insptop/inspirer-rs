@@ -13,10 +13,6 @@ members = [
     "inspirer-applications/*"
 ]
 
-[[bin]]
-name = "inspirer"
-path = "src/bin/inspirer.rs"
-
 [dependencies]
 anyhow = "1.0.53"
 inspirer-core = {path = "inspirer-core"}
